@@ -33,6 +33,13 @@
 // var next = document.getElementById("next")
 // var img = document.getElementById("img")
 // var i=0
+// setInterval(function(){
+//     if(sliders.length<=i){
+//     i=0
+// }
+//    img.src =  sliders[i]
+//    i++
+// },1000)
 // next.onclick = function(){
 //     if(sliders.length<=i){
 //         i=0
@@ -60,22 +67,22 @@
 
 
 
-var click = document.getElementById("click")
-var search = document.getElementById("search")
-var img = document.getElementById("img")
-var username = document.getElementById("username")
-click.addEventListener("click",function(){
-    var ajax = new XMLHttpRequest
-    ajax.open("GET","https://api.github.com/users/"+search.value)
-    ajax.send()
-    ajax.onreadystatechange = function(){
-        if(ajax.readyState == 4){
-            var data = JSON.parse(ajax.response)
-            img.src = data.avatar_url
-            username.innerText = data.name
-        }
-    }
-})
+// var click = document.getElementById("click")
+// var search = document.getElementById("search")
+// var img = document.getElementById("img")
+// var username = document.getElementById("username")
+// click.addEventListener("click",function(){
+//     var ajax = new XMLHttpRequest
+//     ajax.open("GET","https://api.github.com/users/"+search.value)
+//     ajax.send()
+//     ajax.onreadystatechange = function(){
+//         if(ajax.readyState == 4){
+//             var data = JSON.parse(ajax.response)
+//             img.src = data.avatar_url
+//             username.innerText = data.name
+//         }
+//     }
+// })
 
 
 // click.onclick = function (){
@@ -85,3 +92,27 @@ click.addEventListener("click",function(){
 // click.onclick = function (){
 //     alert("test 2")
 // }
+
+// var loader = document.querySelector(".loader")
+// setTimeout(function(){
+//     loader.style.opacity= "0"
+// },1500)
+
+
+// setInterval(function(){
+//     console.log("test")
+// },1000)
+
+
+
+// todo task 
+
+
+var task = document.getElementById("task")
+var save = document.getElementById("save")
+var todo = []
+
+save.addEventListener("click",function(){
+    todo.push(task.value)
+    console.log(todo)
+})

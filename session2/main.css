@@ -1,0 +1,28 @@
+*{
+    margin: 0;
+}
+.slider {
+    width: 100%;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.slider button {
+    padding: 10px 25px;
+    border: none;
+    background: rgb(68, 68, 207);
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 1s;
+}
+.slider button:hover{
+    background: rgb(139, 139, 245) ;
+    color: black;
+
+}
+.slider img {
+    width: 100%;
+    height: 85%;
+}

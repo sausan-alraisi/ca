@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Show/Hide Password</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="card">
+    <h1 class="title">Show / Hide Password</h1>
+
+    <div class="field">
+      <label for="passwordInput">Password</label>
+      <div class="input-row">
+        <input id="passwordInput" type="password" placeholder="Enter your password" autocomplete="current-password">
+        <button id="toggleButton" type="button" onclick="togglePassword()">Show</button>
+      </div>
+      <div class="hint">Uses getElementById + onclick</div>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html> 

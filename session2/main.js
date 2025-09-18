@@ -71,18 +71,18 @@
 // var search = document.getElementById("search")
 // var img = document.getElementById("img")
 // var username = document.getElementById("username")
-// click.addEventListener("click",function(){
-//     var ajax = new XMLHttpRequest
-//     ajax.open("GET","https://api.github.com/users/"+search.value)
-//     ajax.send()
-//     ajax.onreadystatechange = function(){
-//         if(ajax.readyState == 4){
-//             var data = JSON.parse(ajax.response)
-//             img.src = data.avatar_url
-//             username.innerText = data.name
-//         }
-//     }
-// })
+click.addEventListener("click",function(){
+    var ajax = new XMLHttpRequest
+    ajax.open("GET","https://api.github.com/users/"+search.value)
+    ajax.send()
+    ajax.onreadystatechange = function(){
+        if(ajax.readyState == 4){
+            var data = JSON.parse(ajax.response)
+            img.src = data.avatar_url
+            username.innerText = data.name
+        }
+    }
+})
 
 
 // click.onclick = function (){
@@ -110,9 +110,48 @@
 
 var task = document.getElementById("task")
 var save = document.getElementById("save")
+var update = document.getElementById("update")
 var todo = []
-
+var result = document.querySelector(".todo-result ul")
 save.addEventListener("click",function(){
     todo.push(task.value)
-    console.log(todo)
+    task.value = ""
+    show()
 })
+
+
+function show(){
+    var data = ""
+    for(var i=0;i<todo.length;i++){
+        data += "<li onclick='edit("+i+")'  ondblclick='destroy("+i+")'>"+todo[i]+"</li>";
+    }
+    
+    result.innerHTML = data
+}
+
+
+function destroy(index){
+   todo.splice(index,1)
+   show() 
+}
+
+var i
+function edit(index){
+    task.value = todo[index]
+    update.style.display = "inline-block"
+    save.style.display = "none"
+    i = index
+}
+
+
+update.addEventListener("click",function(){
+   todo[i] = task.value
+    show()
+    task.value = ""
+    update.style.display = "none"
+    save.style.display = "inline-block"
+
+})
+
+// ecma 6 
+

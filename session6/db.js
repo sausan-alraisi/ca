@@ -1,10 +1,10 @@
-import mysql2 from 'mysql2'
-
-let connection = mysql2.createConnection({
+import { Sequelize } from "sequelize";
+const db = new Sequelize('oman','root','',{
     host:"localhost",
-    user:"root",
-    password:"",
-    database:"oman"
+    dialect:"mysql",
+    define: {
+        timestamps: false
+    }
 })
 
-export default connection
+export default db

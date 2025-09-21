@@ -1,9 +1,7 @@
-import connection from "../db.js";
-export let getCategories = (req,res)=>{
-    connection.query("SELECT * FROM `categories`",(error,data)=>{
-        if(error) return res.json({msg:"error"})
-        res.json({msg:data})    
-    })
+import categoriesModel from '../Models/categories.model.js'
+export let getCategories = async (req,res)=>{
+    let categories = await categoriesModel.findAll()
+     res.json({msg:categories})
 }
 
 

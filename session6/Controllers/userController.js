@@ -1,10 +1,9 @@
-import connection from "../db.js";
+// import connection from "../db.js";
+import usersModel from '../Models/users.model.js'
 import {validationResult} from 'express-validator'
-export let getUsers = (req,res)=>{
-    connection.query("SELECT * FROM `users`",(error,data)=>{
-        if(error) return res.json({msg:"error"})
-        res.json({msg:data})    
-    })
+export let getUsers = async (req,res)=>{
+     let  users = await usersModel.findAll()
+     res.json({msg:users})
 }
 
 

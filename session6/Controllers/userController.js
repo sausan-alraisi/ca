@@ -1,4 +1,5 @@
 import connection from "../db.js";
+import {validationResult} from 'express-validator'
 export let getUsers = (req,res)=>{
     connection.query("SELECT * FROM `users`",(error,data)=>{
         if(error) return res.json({msg:"error"})
@@ -8,6 +9,10 @@ export let getUsers = (req,res)=>{
 
 
 export let addUser = (req,resp)=>{
+    let validation = validationResult(req)
+    if(!validation.isEmpty()){
+        return resp.json({error:validation.array()})
+    }
     let {name,email,password} = req.body
     connection.query("INSERT INTO `users` (`name`,`email`,`password`) values (?,?,?)",[name,email,password],(error,res)=>{
         if(error) return resp.json({msg:"error"})
@@ -26,9 +31,12 @@ export let deleteUser = (req,resp)=>{
 
 
 export let updateUser = (req,resp)=>{
-   let {id} = req.params;
+   let  {id} = req.params;
    let {name,email,password}  = req.body
-
+    let validation = validationResult(req)
+    if(!validation.isEmpty()){
+        return resp.json({error:validation.array()})
+    }
    connection.query("UPDATE `users` SET `name` = ? , `email` = ? , password = ? where id = ?",[name,email,password,id],(error,result)=>{
         if(error) return resp.json({msg:"error"})
             return resp.json({msg:"success"})

@@ -1,4 +1,6 @@
-import { Sequelize, DataTypes } from 'sequelize';
+import {  DataTypes } from 'sequelize';
+import Sequelize from './config/db.js'; // استدعاء الاتصال
+
 import dotenv from 'dotenv';
 import UserModel from './user.js';
 import TicketModel from './ticket.js';
@@ -18,9 +20,8 @@ const sequelize = new Sequelize(
 );
 
 const db = {};
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
-
+db.Sequelize = Sequelize.constructor; 
+db.sequelize = Sequelize;
 // Models
 db.User = UserModel(sequelize, DataTypes);
 db.Ticket = TicketModel(sequelize, DataTypes);

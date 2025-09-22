@@ -53,15 +53,12 @@ export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // البحث عن المستخدم بالـemail
     const user = await User.findOne({ where: { email } });
     if (!user) return res.status(400).json({ error: 'Invalid email or password' });
 
-    // التحقق من الباسورد
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ error: 'Invalid email or password' });
 
-    // إنشاء JWT
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,

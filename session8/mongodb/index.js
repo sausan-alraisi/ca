@@ -1,10 +1,8 @@
 import express from 'express'
 import cors from 'cors'
-import mongoose from 'mongoose'
+import {addUsers,deleteUsers,getUsers,updateUsers} from './controllers/userController.js'
 const app = express()
 
-mongoose.connect("mongodb://localhost:27017/oman")
-const usersModel =  mongoose.model("users",{name:String,email:String,password:String})
 
 app.use(cors())
 app.use(express.json())
@@ -12,10 +10,16 @@ app.use(express.json())
 const router =  express.Router()
 
 
-router.get("/", async (req,res)=>{
-   const users =  await usersModel.find()
-   res.json({msg:users})
-})
+router.get("/",getUsers)
+
+
+router.post("/",addUsers)
+
+
+router.put("/:id",updateUsers)
+
+
+router.delete("/:id",deleteUsers)
 
 
 app.use(router)

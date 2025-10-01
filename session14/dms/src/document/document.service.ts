@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { Document } from './entities/document.entity';
 import { Attachment } from '../attachment/entities/attachment.entity';
 
-
 @Injectable()
 export class DocumentService {
   constructor(
@@ -15,23 +14,29 @@ export class DocumentService {
   ) {}
 
   async create(body: any, files: Express.Multer.File[]): Promise<Document> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const document = this.docRepo.create(body);
+
+    // save بيرجع object واحد Document وليس array
     const savedDocument = await this.docRepo.save(document);
 
-    const attachments = files.map((file) => {
-      const att = new Attachment();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      att.pathfile = file.path; // path الملف اللي اتخزن
-      att.document = savedDocument;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      att.document_id = savedDocument.id;
-      return att;
-    });
+    if (files && files.length > 0) {
+      const attachments = files.map((file) => {
+        const att = new Attachment();
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        att.pathfile = file.path;
+        att.document = savedDocument; // ✅ الآن savedDocument كائن Document صحيح
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        att.document_id = savedDocument.id;
+        return att;
+      });
+      await this.attRepo.save(attachments);
+    }
 
-    await this.attRepo.save(attachments);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return this.findOne(savedDocument.id);
+    // جلب الـ document مرة ثانية مع الattachments
+    return this.docRepo.findOne({
+      where: { id: savedDocument.id },
+      relations: ['attachments'],
+    });
   }
 
   async findAll(): Promise<Document[]> {

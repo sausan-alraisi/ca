@@ -3,8 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Document } from './entities/document.entity';
 import { Attachment } from '../attachment/entities/attachment.entity';
-import { join } from 'path';
-import * as fs from 'fs';
+
 
 @Injectable()
 export class DocumentService {

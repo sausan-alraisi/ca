@@ -14,9 +14,6 @@ export class Attachment {
     onDelete: 'CASCADE',
   })
   document: Document;
-
   @Column({ type: 'uniqueidentifier' })
   document_id: string;
-    att: Document[];
-    att: Document[];
 }

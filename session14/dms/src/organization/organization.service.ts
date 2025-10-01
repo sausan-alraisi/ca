@@ -4,14 +4,14 @@ import { Repository } from 'typeorm';
 import { Organization } from './entities/organization.entity';
 
 @Injectable()
-export class OrganizationsService {
+export class OrganizationService {
   constructor(
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     @InjectRepository(Organization)
     private readonly orgRepo: Repository<Organization>,
   ) {}
 
-  async create(body: any): Promise<Organization> {
+  async create(body: any): Promise<Organization[]> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const org = this.orgRepo.create(body);
     return this.orgRepo.save(org);
@@ -21,11 +21,11 @@ export class OrganizationsService {
     return this.orgRepo.find();
   }
 
-  async findOne(id: string): Promise<Organization> {
+  async findOne(id: string): Promise<Organization | null> {
     return this.orgRepo.findOne({ where: { id } });
   }
 
-  async update(id: string, body: any): Promise<Organization> {
+  async update(id: string, body: any): Promise<Organization | null> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await this.orgRepo.update(id, body);
     return this.findOne(id);

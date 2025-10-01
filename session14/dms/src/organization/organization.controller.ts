@@ -7,11 +7,11 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { OrganizationsService } from './organization.service';
+import { OrganizationService } from './organization.service';
 
-@Controller('organizations')
-export class OrganizationsController {
-  constructor(private readonly organizationsService: OrganizationsService) {}
+@Controller('organization')
+export class OrganizationController {
+  constructor(private readonly organizationsService: OrganizationService) {}
 
   @Post()
   create(@Body() body: any) {

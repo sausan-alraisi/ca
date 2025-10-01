@@ -4,7 +4,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { Attachment } from '../../attachment/entities/attachment.entity';
 
 @Entity('documents')
 export class Document {
@@ -43,4 +45,9 @@ export class Document {
 
   @Column({ type: 'datetime2', precision: 0, nullable: true })
   procedure_date: Date;
+
+  @OneToMany(() => Attachment, (attachment) => attachment.document, {
+    cascade: true,
+  })
+  attachments: Attachment[];
 }

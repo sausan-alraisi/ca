@@ -2,18 +2,37 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Document } from './entities/document.entity';
+import { Attachment } from '../attachment/entities/attachment.entity';
+import { join } from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class DocumentService {
   constructor(
     @InjectRepository(Document)
     private readonly docRepo: Repository<Document>,
+    @InjectRepository(Attachment)
+    private readonly attRepo: Repository<Attachment>,
   ) {}
 
-  async create(body: any): Promise<Document[]> {
+  async create(body: any, files: Express.Multer.File[]): Promise<Document> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    const doc = this.docRepo.create(body);
-    return this.docRepo.save(doc);
+    const document = this.docRepo.create(body);
+    const savedDocument = await this.docRepo.save(document);
+
+    const attachments = files.map((file) => {
+      const att = new Attachment();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      att.pathfile = file.path; // path الملف اللي اتخزن
+      att.document = savedDocument;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      att.document_id = savedDocument.id;
+      return att;
+    });
+
+    await this.attRepo.save(attachments);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    return this.findOne(savedDocument.id);
   }
 
   async findAll(): Promise<Document[]> {

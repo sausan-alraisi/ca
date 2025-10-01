@@ -14,10 +14,13 @@ export class DocumentService {
   ) {}
 
   async create(body: any, files: Express.Multer.File[]): Promise<Document> {
-    const document = this.docRepo.create(body);
+    const created = this.docRepo.create(body as Partial<Document>);
+    if (Array.isArray(created)) {
+      throw new Error('Expected a single document payload, received an array');
+    }
 
     // save بيرجع object واحد Document وليس array
-    const savedDocument = await this.docRepo.save(document);
+    const savedDocument = await this.docRepo.save(created);
 
     if (files && files.length > 0) {
       const attachments = files.map((file) => {
@@ -25,18 +28,20 @@ export class DocumentService {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         att.pathfile = file.path;
         att.document = savedDocument; // ✅ الآن savedDocument كائن Document صحيح
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        att.document_id = savedDocument.id;
         return att;
       });
       await this.attRepo.save(attachments);
     }
 
     // جلب الـ document مرة ثانية مع الattachments
-    return this.docRepo.findOne({
+    const result = await this.docRepo.findOne({
       where: { id: savedDocument.id },
       relations: ['attachments'],
     });
+    if (!result) {
+      throw new Error('Saved document not found after creation');
+    }
+    return result;
   }
 
   async findAll(): Promise<Document[]> {

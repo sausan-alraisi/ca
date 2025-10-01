@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { Document } from './entities/document.entity';
 import { Attachment } from '../attachment/entities/attachment.entity';
 
-
 @Injectable()
 export class DocumentService {
   constructor(
@@ -15,23 +14,34 @@ export class DocumentService {
   ) {}
 
   async create(body: any, files: Express.Multer.File[]): Promise<Document> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    const document = this.docRepo.create(body);
-    const savedDocument = await this.docRepo.save(document);
+    const created = this.docRepo.create(body as Partial<Document>);
+    if (Array.isArray(created)) {
+      throw new Error('Expected a single document payload, received an array');
+    }
 
-    const attachments = files.map((file) => {
-      const att = new Attachment();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      att.pathfile = file.path; // path الملف اللي اتخزن
-      att.document = savedDocument;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      att.document_id = savedDocument.id;
-      return att;
+    // save بيرجع object واحد Document وليس array
+    const savedDocument = await this.docRepo.save(created);
+
+    if (files && files.length > 0) {
+      const attachments = files.map((file) => {
+        const att = new Attachment();
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        att.pathfile = file.path;
+        att.document = savedDocument; // ✅ الآن savedDocument كائن Document صحيح
+        return att;
+      });
+      await this.attRepo.save(attachments);
+    }
+
+    // جلب الـ document مرة ثانية مع الattachments
+    const result = await this.docRepo.findOne({
+      where: { id: savedDocument.id },
+      relations: ['attachments'],
     });
-
-    await this.attRepo.save(attachments);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return this.findOne(savedDocument.id);
+    if (!result) {
+      throw new Error('Saved document not found after creation');
+    }
+    return result;
   }
 
   async findAll(): Promise<Document[]> {
